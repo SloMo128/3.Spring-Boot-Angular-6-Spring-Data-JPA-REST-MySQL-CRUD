@@ -1,0 +1,23 @@
+<div *ngIf="!isLoading && feedback.feedbackType === 'error'" class="alert alert-danger" role="alert">
+    {{ feedback.feedbackmsg }}
+</div>
+
+<div class="container mt-5">
+    <tr *ngFor="let customer of customer let i=index">
+        <h3><strong> <img src="assets\img\person.png" Style="width:30px;height:30px" /> Name:</strong> {{customer.name}}</h3>
+        <h3><strong> <img src="assets\img\age.png" Style="width:30px;height:30px" /> Age: </strong>{{customer.age}}</h3>
+        <h3><strong>
+            <img *ngIf="customer.active" src="assets\img\check.png" Style="width:30px;height:30px" />
+            <img *ngIf="!customer.active" src="assets\img\x.png" Style="width:27px;height:27px" />
+             Active: 
+        </strong>{{customer.active}}</h3>
+        <h3>
+            <button *ngIf="customer.active" (click)="toggleActive(customer, i)" type="button"
+                class="btn btn-warning">Inactive</button>
+            <button *ngIf="!customer.active" (click)="toggleActive(customer, i)" type="button"
+                class="btn btn-info">Active</button>
+            <button type="button" (click)="deleteUser(customer.id, i)"class="btn btn-danger">Delite</button>
+        </h3>
+        <br><br>
+    </tr>
+</div>

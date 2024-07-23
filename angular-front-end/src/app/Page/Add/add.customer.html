@@ -1,0 +1,37 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Add New Customer</h2>
+
+  <!-- Add Customer Form -->
+  <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" formControlName="name" class="form-control" [ngClass]="{'is-invalid': name.invalid && (name.dirty || name.touched)}">
+      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="invalid-feedback">
+        <div *ngIf="name.errors?.required">Name is required.</div>
+        <div *ngIf="name.errors?.minlength">Name must be at least 2 characters long.</div>
+        <div *ngIf="name.errors?.maxlength">Name cannot be more than 10 characters long.</div>
+        <div *ngIf="name.errors?.pattern">Name can only contain letters.</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="age">Age</label>
+      <input type="text" id="age" formControlName="age" class="form-control" [ngClass]="{'is-invalid': age.invalid && (age.dirty || age.touched)}">
+      <div *ngIf="age.invalid && (age.dirty || age.touched)" class="invalid-feedback">
+        <div *ngIf="age.errors?.required">Age is required.</div>
+        <div *ngIf="age.errors?.min">Age must be at least 1.</div>
+        <div *ngIf="age.errors?.max">Age cannot be more than 120.</div>
+        <div *ngIf="age.errors?.pattern">Age can only contain numbers.</div>
+      </div>
+    </div>
+
+    <div class="form-group form-check">
+      <input type="checkbox" id="active" formControlName="active" class="form-check-input">
+      <label class="form-check-label" for="active">
+        Active
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid">Add Customer</button>
+  </form>
+</div>
