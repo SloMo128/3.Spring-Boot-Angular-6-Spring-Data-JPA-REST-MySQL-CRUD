@@ -76,7 +76,14 @@ export class SearchComponent implements OnInit {
 
     toggleActive(customer, index){
         customer.active = !customer.active
-      }
+    }
+
+    reset(){
+        this.searchForm = this.fb.group({
+            searchAge: [''],
+            searchName: [''],
+        });
+    }
 
     deleteUser(id: string, index) {
         if (window.confirm("Are you sure you want to delete this product?")) {

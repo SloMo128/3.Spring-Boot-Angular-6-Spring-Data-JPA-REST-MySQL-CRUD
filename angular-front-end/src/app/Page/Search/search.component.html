@@ -16,6 +16,8 @@
         <input class="form-control mr-sm-2" type="search" formControlName="searchName" placeholder="Search Name" aria-label="Search">
         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
     </form>
+    &nbsp;&nbsp;&nbsp;
+    <button type="button" class="btn btn-danger" (click)="reset()">Reset</button>
 </div>
 <div class="container mt-5">
     <tr *ngFor="let customer of customer let i=index">
