@@ -55,7 +55,7 @@ public class Controller {
 	
 	@GetMapping("/age/{age}")
 	public ResponseEntity<List<Customer>> getCustByAge(@PathVariable("age") int age) {
-		Slice<Customer> slicedResult = repo.findByAge(age, page); 
+		Page<Customer> slicedResult = repo.findByAge(age, page); 
 
 		List<Customer> customerList = slicedResult.getContent();
 		
@@ -68,7 +68,7 @@ public class Controller {
 	
 	@GetMapping("/customer/name/{name}")
 	public ResponseEntity<List<Customer>> getCustByName(@PathVariable("name") String name) {
-		Slice<Customer> slicedResult = repo.findByName(name, page); 
+		Page<Customer> slicedResult = repo.findByName(name, page); 
 
 		List<Customer> customerList = slicedResult.getContent();
 		

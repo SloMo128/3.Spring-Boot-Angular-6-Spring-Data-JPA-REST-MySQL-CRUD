@@ -7,10 +7,11 @@
         <h3><strong> <img src="assets\img\person.png" Style="width:30px;height:30px" /> Name:</strong> {{customer.name}}</h3>
         <h3><strong> <img src="assets\img\age.png" Style="width:30px;height:30px" /> Age: </strong>{{customer.age}}</h3>
         <h3><strong>
-            <img *ngIf="customer.active" src="assets\img\check.png" Style="width:30px;height:30px" />
-            <img *ngIf="!customer.active" src="assets\img\x.png" Style="width:27px;height:27px" />
-             Active: 
-        </strong>{{customer.active}}</h3>
+                <img *ngIf="customer.active" src="assets\img\check.png" Style="width:30px;height:30px" />
+                <img *ngIf="!customer.active" src="assets\img\x.png" Style="width:27px;height:27px" />
+                Active: 
+            </strong>{{customer.active}}
+        </h3>
         <h3>
             <button *ngIf="customer.active" (click)="toggleActive(customer, i)" type="button"
                 class="btn btn-warning">Inactive</button>
