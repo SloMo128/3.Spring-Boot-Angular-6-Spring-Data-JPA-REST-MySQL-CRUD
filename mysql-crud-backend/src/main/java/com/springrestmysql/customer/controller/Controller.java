@@ -43,7 +43,7 @@ public class Controller {
 	
 	@GetMapping("/list")
 	public ResponseEntity<List<Customer>> getUsers() {
-		Pageable page = PageRequest.of(0, 25, Sort.by("name").descending());
+		Pageable page = PageRequest.of(0, 9, Sort.by("name").descending());
 		Page<Customer> pagedResult = repo.findAll(page);
 
         if (pagedResult.hasContent()) {
@@ -55,12 +55,10 @@ public class Controller {
 	
 	@GetMapping("/age/{age}")
 	public ResponseEntity<List<Customer>> getCustByAge(@PathVariable("age") int age) {
-		Page<Customer> slicedResult = repo.findByAge(age, page); 
-
-		List<Customer> customerList = slicedResult.getContent();
+		Page<Customer> customerList = repo.findByAge(age, page); 
 		
 		if (!customerList.isEmpty()) {
-			return new ResponseEntity<>(customerList, HttpStatus.OK);
+			return new ResponseEntity<>(customerList.getContent(), HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
@@ -68,12 +66,10 @@ public class Controller {
 	
 	@GetMapping("/customer/name/{name}")
 	public ResponseEntity<List<Customer>> getCustByName(@PathVariable("name") String name) {
-		Page<Customer> slicedResult = repo.findByName(name, page); 
-
-		List<Customer> customerList = slicedResult.getContent();
+		Page<Customer> customerList = repo.findByName(name, page); 
 		
 		if (!customerList.isEmpty()) {
-			return new ResponseEntity<>(customerList, HttpStatus.OK);
+			return new ResponseEntity<>(customerList.getContent(), HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
