@@ -83,6 +83,13 @@ export class SearchComponent implements OnInit {
             searchAge: [''],
             searchName: [''],
         });
+        this.customer=[];
+
+        this.feedback = {
+            feedbackType: "success",
+            feedbackmsg: "Rest",
+        };
+
     }
 
     deleteUser(id: string, index) {

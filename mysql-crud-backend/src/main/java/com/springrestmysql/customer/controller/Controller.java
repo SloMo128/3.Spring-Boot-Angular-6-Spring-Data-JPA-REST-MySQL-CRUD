@@ -1,7 +1,9 @@
 package com.springrestmysql.customer.controller;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -9,11 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,15 +44,21 @@ public class Controller {
 	}
 	
 	@GetMapping("/list")
-	public ResponseEntity<List<Customer>> getUsers() {
-		Page<Customer> pagedResult = repo.findAll(page);
-
-        if (pagedResult.hasContent()) {
-            return new ResponseEntity<>(pagedResult.getContent(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-    }
+	public ResponseEntity<Object> getCustomers(
+			@RequestParam(name="page", required = false, defaultValue = "0") int page,
+			@RequestParam(name="size", required = false, defaultValue = "10") int size,
+			@RequestParam(required = false, defaultValue = "id") String sort) {
+		Map<String, Object> responseBody = new LinkedHashMap<>();
+		Pageable paging = PageRequest.of(page, size, Sort.by(sort));
+		Page<Customer> pagedResult = repo.findAll(paging);
+		if (pagedResult.hasContent()) {
+			responseBody.put("customers", pagedResult.getContent());
+			responseBody.put("count", repo.count());
+			return new ResponseEntity<>(responseBody, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+	}
 	
 	@GetMapping("/age/{age}")
 	public ResponseEntity<List<Customer>> getCustByAge(@PathVariable("age") int age) {
