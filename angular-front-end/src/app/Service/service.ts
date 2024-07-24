@@ -7,14 +7,14 @@ export class CustomerApiService {
 
     baseURL: string = "http://localhost:8080/spring-rest-api/";
 
-    constructor(private http: HttpClient){}
+    constructor(private http: HttpClient) { }
 
-    getUsers(): Observable<Customer[]> {
-        return this.http.get<Customer[]>(this.baseURL + 'list')
+    getCustomer(params: HttpParams): Observable<Customer[]> {
+        return this.http.get<Customer[]>(this.baseURL + 'list', { params })
     }
 
     getEdit(id: string): Observable<Customer> {
-        return this.http.get<Customer>(this.baseURL + 'put/' +id)
+        return this.http.get<Customer>(this.baseURL + 'put/' + id)
     }
 
     update(id: string, user: Customer): Observable<Customer> {
@@ -25,7 +25,7 @@ export class CustomerApiService {
 
     deleteUser(id: string): Observable<Customer> {
         return this.http.delete<Customer>(this.baseURL + 'delite/' + id)
-            //.pipe(catchError((err) => this.handleError('DELETE', err)));
+        //.pipe(catchError((err) => this.handleError('DELETE', err)));
     }
 
     add(user: Customer): Observable<Customer> {
@@ -33,15 +33,14 @@ export class CustomerApiService {
         const body = JSON.stringify(user);
         console.log(body)
         return this.http.post<Customer>(this.baseURL + 'add', body, { 'headers': headers })
-            //.pipe(catchError((err) => this.handleError('POST', err)));
+        //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
     findByAge(age: string): Observable<Customer[]> {
-        return this.http.get<Customer[]>(this.baseURL + 'age/'+ age);
+        return this.http.get<Customer[]>(this.baseURL + 'age/' + age);
     }
 
     findByName(name: string): Observable<Customer[]> {
-        return this.http.get<Customer[]>(this.baseURL + 'name/'+ name);
+        return this.http.get<Customer[]>(this.baseURL + 'name/' + name);
     }
-
 }

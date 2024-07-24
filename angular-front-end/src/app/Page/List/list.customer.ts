@@ -18,6 +18,11 @@ export class ListComponent implements OnInit {
   isLoading: boolean = false;
   searchForm: FormGroup;
 
+  totalCustomers: number = 0;
+  pagination: number = 0;
+  customerPage: number = 5;
+  sortField: string = "name"
+
   constructor(
     private customerService: CustomerApiService,
     private router: Router,
@@ -25,16 +30,24 @@ export class ListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getUsers()
+    this.getList()
   }
 
 
-  getUsers(): void {
+  getList(): void {
+    let params = new HttpParams;
     this.customer = [];
-    this.customerService.getUsers().subscribe({
-      next: (data: Customer[]) => {
+
+    params = params.append('page', "" + this.pagination);
+    params = params.append('size', "" + this.customerPage);
+    params = params.append('sort', "" + this.sortField);
+
+    this.customerService.getCustomer(params).subscribe({
+      next: (data: any) => {
         if (data.length !== 0) {
-          this.customer = data;
+          this.customer = data.customers;
+          this.totalCustomers = data.count;
+          console.log(this.customer);
         };
         this.isLoading = true;
       },
@@ -55,7 +68,12 @@ export class ListComponent implements OnInit {
     });
   }
 
-  toggleActive(customer, index){
+  renderPage(event: number) {
+    this.pagination = event - 1;
+    this.getList();
+  }
+
+  toggleActive(customer, index) {
     customer.active = !customer.active
   }
 

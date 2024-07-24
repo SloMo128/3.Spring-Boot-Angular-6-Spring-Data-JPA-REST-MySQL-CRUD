@@ -15,6 +15,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AddComponent } from './Page/Add/add.customer';
 import { SearchComponent } from './Page/Search/search.component';
 import { GlobalHttpInterceptorService } from './Service/global-http-Interceptor.service';
+import { NgxPaginationModule } from 'ngx-pagination';
+
 
 
 @NgModule({
@@ -33,6 +35,7 @@ import { GlobalHttpInterceptorService } from './Service/global-http-Interceptor.
     AppRouting,
     HttpClientModule,
     ReactiveFormsModule,
+    NgxPaginationModule
   ],
   providers: [CustomerApiService,
     { provide: HTTP_INTERCEPTORS, useClass: GlobalHttpInterceptorService, multi: true }
