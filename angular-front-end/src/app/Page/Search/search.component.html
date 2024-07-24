@@ -1,14 +1,19 @@
 <div *ngIf="!isLoading && feedback.feedbackType === 'error'" class="alert alert-danger" role="alert">
     {{ feedback.feedbackmsg }}
-  </div>
+</div>
   
-  <div *ngIf="!isLoading && feedback.feedbackType === 'success'" class="alert alert-success" role="alert">
+<div *ngIf="!isLoading && feedback.feedbackType === 'success'" class="alert alert-success" role="alert">
     {{ feedback.feedbackmsg }}
-  </div>
+</div>
 
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="filter()">
-        <input class="form-control mr-sm-2" type="search" formControlName="search" placeholder="Search" aria-label="Search">
+    <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="findByAge()">
+        <input class="form-control mr-sm-2" type="search" formControlName="searchAge" placeholder="Search Age" aria-label="Search">
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    &nbsp;&nbsp;&nbsp;
+    <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="findByName()">
+        <input class="form-control mr-sm-2" type="search" formControlName="searchName" placeholder="Search Name" aria-label="Search">
         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
     </form>
 </div>

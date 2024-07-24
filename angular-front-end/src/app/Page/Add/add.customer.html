@@ -1,3 +1,11 @@
+<div *ngIf="!isLoading && feedback.feedbackType === 'error'" class="alert alert-danger" role="alert">
+  {{ feedback.feedbackmsg }}
+</div>
+
+<div *ngIf="!isLoading && feedback.feedbackType === 'success'" class="alert alert-success" role="alert">
+  {{ feedback.feedbackmsg }}
+</div>
+
 <div class="container mt-5">
   <h2 class="mb-4">Add New Customer</h2>
   <!-- Add Customer Form -->

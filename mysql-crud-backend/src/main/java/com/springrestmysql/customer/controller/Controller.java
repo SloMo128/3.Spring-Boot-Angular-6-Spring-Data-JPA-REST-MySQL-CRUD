@@ -9,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -26,16 +24,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.springrestmysql.customer.CustomerApplication;
 import com.springrestmysql.customer.model.Customer;
 import com.springrestmysql.customer.repo.CustomerRepository;
+
 
 @RestController
 @RequestMapping(path = "/spring-rest-api", produces = "application/json")
 @CrossOrigin(origins = "http://localhost:4200") // Angular Home Page
 public class Controller {
 	private final  CustomerRepository repo;
-	Pageable page = PageRequest.of(0, 3, Sort.by("name").descending());
+	Pageable page = PageRequest.of(0, 2, Sort.by("name").descending());
 
 	public Controller(CustomerRepository repo) {
 		this.repo = repo;
@@ -43,7 +41,6 @@ public class Controller {
 	
 	@GetMapping("/list")
 	public ResponseEntity<List<Customer>> getUsers() {
-		Pageable page = PageRequest.of(0, 9, Sort.by("name").descending());
 		Page<Customer> pagedResult = repo.findAll(page);
 
         if (pagedResult.hasContent()) {
@@ -57,18 +54,18 @@ public class Controller {
 	public ResponseEntity<List<Customer>> getCustByAge(@PathVariable("age") int age) {
 		Page<Customer> customerList = repo.findByAge(age, page); 
 		
-		if (!customerList.isEmpty()) {
+		if (customerList.hasContent()) {
 			return new ResponseEntity<>(customerList.getContent(), HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 	}
 	
-	@GetMapping("/customer/name/{name}")
+	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Customer>> getCustByName(@PathVariable("name") String name) {
-		Page<Customer> customerList = repo.findByName(name, page); 
+		Page<Customer> customerList = repo.findByNameButNotActive("%" + name + "%", page); 
 		
-		if (!customerList.isEmpty()) {
+		if (customerList.hasContent()) {
 			return new ResponseEntity<>(customerList.getContent(), HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

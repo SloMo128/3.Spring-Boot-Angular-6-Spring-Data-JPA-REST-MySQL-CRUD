@@ -36,8 +36,12 @@ export class CustomerApiService {
             //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
-    findByQueryOneSearch(params: string): Observable<Customer[]> {
-        return this.http.get<Customer[]>(this.baseURL + 'age/'+ params);
+    findByAge(age: string): Observable<Customer[]> {
+        return this.http.get<Customer[]>(this.baseURL + 'age/'+ age);
+    }
+
+    findByName(name: string): Observable<Customer[]> {
+        return this.http.get<Customer[]>(this.baseURL + 'name/'+ name);
     }
 
 }

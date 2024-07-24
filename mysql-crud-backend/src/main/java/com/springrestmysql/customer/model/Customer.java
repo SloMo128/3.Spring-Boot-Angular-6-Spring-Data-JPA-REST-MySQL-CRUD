@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "spring_customer")
-@NamedQuery(name = "Customer.findByNameButNotActive", query = "SELECT c FROM Customer c WHERE c.name = (?1) and c.active= false")
+@NamedQuery(name = "Customer.findByNameButNotActive", query = "SELECT c FROM Customer c WHERE c.name LIKE (?1) and c.active = false ORDER BY c.name DESC")
 public class Customer {
 
 	@Id
@@ -22,10 +22,8 @@ public class Customer {
 	@Column(name = "full_name")
 	private String name;
 
-	@Column(name = "age")
 	private int age;
 
-	@Column(name = "active")
 	private boolean active;
 
 	public Customer() {

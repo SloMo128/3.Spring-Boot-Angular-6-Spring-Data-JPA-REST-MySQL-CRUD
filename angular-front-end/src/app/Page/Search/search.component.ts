@@ -25,17 +25,42 @@ export class SearchComponent implements OnInit {
 
     ngOnInit() {
         this.searchForm = this.fb.group({
-            search: [''],
+            searchAge: [''],
+            searchName: [''],
         });
     }
 
-    filter() {
-
-        const searchValue = this.searchForm.controls.search.value;
+    findByAge() {
+        const searchAgeValue = this.searchForm.controls.searchAge.value;
         this.customer = [];
-        this.customerService.findByQueryOneSearch(searchValue).subscribe({
+        this.customerService.findByAge(searchAgeValue).subscribe({
             next: (data: Customer[]) => {
                 this.customer = data;
+                this.searchForm = this.fb.group({
+                    searchName: [''],
+                });
+                this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered' };
+            },
+            error: (err: any) => {
+                this.isLoading = false;
+                console.log(err);
+                this.feedback = {
+                    feedbackType: err.feedbackType,
+                    feedbackmsg: err.feedbackmsg,
+                };
+            }
+        });
+    }
+
+    findByName() {
+        const searchNameValue = this.searchForm.controls.searchName.value;
+        this.customer = [];
+        this.customerService.findByName(searchNameValue).subscribe({
+            next: (data: Customer[]) => {
+                this.customer = data;
+                this.searchForm = this.fb.group({
+                    searchAge: [''],
+                });
                 this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered' };
             },
             error: (err: any) => {
