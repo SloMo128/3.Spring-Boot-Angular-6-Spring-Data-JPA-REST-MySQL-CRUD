@@ -15,6 +15,7 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
 
 	Page<Customer> findByNameButNotActiveASC(String name, Pageable pageable);
 	Page<Customer> findByNameButNotActiveDESC(String name, Pageable pageable);
+	int countByNameButInactive(String name);
 
 	Page<Customer> getCustByName(String name, Pageable paging);
 }

@@ -88,7 +88,7 @@ public class Controller {
 
 	    if (pagedResult.hasContent()) {
 	        responseBody.put("customers", pagedResult.getContent());
-	        responseBody.put("count", repo.countByAge(page));
+	        responseBody.put("count", repo.countByAge(age));
 	        return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	    } else {
 	        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -124,7 +124,7 @@ public class Controller {
 	    }
 	    if (pagedResult.hasContent()) {
 	        responseBody.put("customers", pagedResult.getContent());
-	        responseBody.put("count", repo.count());
+	        responseBody.put("count", repo.countByNameButInactive("%"+name+"%"));
 	        return new ResponseEntity<>(responseBody, HttpStatus.OK);
 	    } else {
 	        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);

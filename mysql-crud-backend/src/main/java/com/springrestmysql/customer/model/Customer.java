@@ -17,6 +17,7 @@ import org.hibernate.annotations.NamedQuery;
 @NamedQueries({
 	@NamedQuery(name = "Customer.findByNameButNotActiveDESC", query = "SELECT c FROM Customer c WHERE c.name LIKE (?1) and c.active=false ORDER BY c.name DESC "),
 	@NamedQuery(name = "Customer.findByNameButNotActiveASC", query = "SELECT c FROM Customer c WHERE c.name LIKE (?1) and c.active=false ORDER BY c.name ASC "),
+	@NamedQuery(name = "Customer.countByNameButInactive", query = "select count(c) from Customer c where c.active = false and c.name like :name"),
 	@NamedQuery(name = "Customer.countByAge", query = "select count(c) from Customer c where c.age = :age")
 })
 public class Customer {

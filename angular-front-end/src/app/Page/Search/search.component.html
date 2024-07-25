@@ -1,48 +1,63 @@
 <div *ngIf="!isLoading && feedback.feedbackType === 'error'" class="alert alert-danger" role="alert">
     {{ feedback.feedbackmsg }}
 </div>
-  
+
 <div *ngIf="!isLoading && feedback.feedbackType === 'success'" class="alert alert-success" role="alert">
     {{ feedback.feedbackmsg }}
 </div>
 
-<div>
-</div>
-
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <button type="button" (click)="pageDirection('DESC')" class="btn btn-light">
-        <img src="assets/img/pageZA.png" style="width:30px; height:30px;" />
+
+    <button type="button" (click)="pageDirection()" class="btn btn-light">
+        <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
+        <img *ngIf="sortOrder === 'DESC'"  src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
     </button>
-    <button type="button" (click)="pageDirection('ASC')" class="btn btn-light">
-        <img src="assets/img/pageAZ.png" style="width:30px; height:30px;" />
-    </button>
-    <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="findByAge()">
+
+    <form class="form-inline" [formGroup]="searchFormAge" (ngSubmit)="findByAge()">
         <input class="form-control mr-sm-2" type="search" formControlName="searchAge" placeholder="Search Age" aria-label="Search">
         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
     </form>
     &nbsp;&nbsp;&nbsp;
-    <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="findByName()">
-        <input class="form-control mr-sm-2" type="search" formControlName="searchName" placeholder="Search Name Inactive" aria-label="Search">
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+    <form class="form-inline" [formGroup]="searchFormName" (ngSubmit)="findByName()">
+        <input class="form-control mr-sm-2" type="search" formControlName="searchName" placeholder="Search Name" aria-label="Search">
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" (click)="findByName()">Search</button>
     </form>
     &nbsp;&nbsp;&nbsp;
     <button type="button" class="btn btn-danger" (click)="reset()">Reset</button>
 </div>
+
 <div class="container mt-5">
-    <tr *ngFor="let customer of customer let i=index">
-        <h3><strong> <img src="assets\img\person.png" Style="width:30px;height:30px" /> Name:</strong> {{customer.name}}</h3>
-            <h3><strong> <img src="assets\img\age.png" Style="width:30px;height:30px" /> Age: </strong>{{customer.age}}</h3>
-            <h3><strong>
-                <img *ngIf="customer.active" src="assets\img\check.png" Style="width:30px;height:30px" />
-                <img *ngIf="!customer.active" src="assets\img\x.png" Style="width:27px;height:27px" />
-                Active: 
-            </strong>{{customer.active}}</h3>    
-        <h3><button *ngIf="customer.active" (click)="toggleActive(customer, i)" type="button"
-            class="btn btn-warning">Inactive</button>
-            <button *ngIf="!customer.active" (click)="toggleActive(customer, i)" type="button"
-            class="btn btn-info">Active</button>
-            <button type="button" (click)="deleteUser(customer.id, i)" class="btn btn-danger">Delite</button>
+    <div *ngFor="let customer of customer | paginate: { itemsPerPage: customerPage, currentPage: pagination + 1, totalItems: totalCustomers }; let i = index">
+        <h3>
+            <strong>
+                <img src="assets/img/person.png" alt="Person" style="width:30px; height:30px;" /> 
+                Name:
+            </strong> 
+            {{ customer.name }}
+        </h3>
+        <h3>
+            <strong>
+                <img src="assets/img/age.png" alt="Age" style="width:30px; height:30px;" /> 
+                Age:
+            </strong> 
+            {{ customer.age }}
+        </h3>
+        <h3>
+            <strong>
+                <img *ngIf="customer.active" src="assets/img/check.png" alt="Active" style="width:30px; height:30px;" />
+                <img *ngIf="!customer.active" src="assets/img/x.png" alt="Inactive" style="width:27px; height:27px;" />
+                Active:
+            </strong> 
+            {{ customer.active }}
+        </h3>
+        <h3>
+            <button *ngIf="customer.active" (click)="toggleActive(customer, i)" type="button" class="btn btn-warning">Inactive</button>
+            <button *ngIf="!customer.active" (click)="toggleActive(customer, i)" type="button" class="btn btn-info">Active</button>
+            <button type="button" (click)="deleteUser(customer.id, i)" class="btn btn-danger">Delete</button>
         </h3>
         <br><br>
-    </tr>
+    </div>
+    <div class="d-flex justify-content-center">
+        <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
+    </div>
 </div>

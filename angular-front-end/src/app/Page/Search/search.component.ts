@@ -15,14 +15,13 @@ export class SearchComponent implements OnInit {
     customer: Customer[] = []
     feedback = new FeedBack("", "");
     isLoading: boolean = false;
-    searchForm: FormGroup;
+    searchFormName: FormGroup;
+    searchFormAge: FormGroup;
     totalCustomers: number = 0;
     pagination: number = 0;
     customerPage: number = 5;
     sortField: string = "name";
     sortOrder: string = "DESC";
-    page = this.sortOrder
-    searchAgeValue: String
 
     constructor(
         private customerService: CustomerApiService,
@@ -31,36 +30,40 @@ export class SearchComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.searchForm = this.fb.group({
-            searchAge: [''],
-            searchName: [''],
+        this.searchFormName = this.fb.group({
+            searchName: ['']
+        });
+        this.searchFormAge = this.fb.group({
+            searchAge: ['']
         });
     }
 
-    pageDirection(page){
-        this.findByAge(page);
-        this.findByName(page);
+    pageDirection() {
+        this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
+        if(this.searchFormAge.controls.searchAge.value){
+            this.findByAge();
+        }else{
+            this.findByName();
+        }
     }
 
-    findByAge(page: string) {
+    findByAge() {
         let params = new HttpParams;
         this.customer = [];
 
         params = params.append('page', "" + this.pagination);
         params = params.append('size', "" + this.customerPage);
         params = params.append('sort', this.sortField);
-        params = params.append('order', page);
+        params = params.append('order', this.sortOrder);
 
-        const searchAgeValue = this.searchForm.controls.searchAge.value;
+        const searchAgeValue = this.searchFormAge.controls.searchAge.value;
 
         this.customer = [];
         this.customerService.findByAge(searchAgeValue, params).subscribe({
             next: (data: any) => {
                 this.customer = data.customers;
                 this.totalCustomers = data.count;
-                this.searchForm = this.fb.group({
-                    searchName: [''],
-                });
+                
                 this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered' };
             },
             error: (err: any) => {
@@ -74,25 +77,23 @@ export class SearchComponent implements OnInit {
         });
     }
 
-    findByName(page: string) {
+    findByName() {
         let params = new HttpParams;
         this.customer = [];
 
         params = params.append('page', "" + this.pagination);
         params = params.append('size', "" + this.customerPage);
         params = params.append('sort', this.sortField);
-        params = params.append('order', page);
+        params = params.append('order', this.sortOrder);
 
-        const searchNameValue = this.searchForm.controls.searchName.value;
+        const searchNameValue = this.searchFormName.controls.searchName.value;
 
         this.customer = [];
         this.customerService.findByName(searchNameValue, params).subscribe({
             next: (data: any) => {
                 this.customer = data.customers;
                 this.totalCustomers = data.count;
-                this.searchForm = this.fb.group({
-                    searchAge: [''],
-                });
+                
                 this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered' };
             },
             error: (err: any) => {
@@ -104,6 +105,15 @@ export class SearchComponent implements OnInit {
                 };
             }
         });
+    }
+
+    renderPage(event: number) {
+        this.pagination = event - 1;
+        if(this.searchFormAge.controls.searchAge.value){
+            this.findByAge();
+        }else{
+            this.findByName();
+        }
     }
 
     toggleActive(customer, index) {
@@ -111,9 +121,11 @@ export class SearchComponent implements OnInit {
     }
 
     reset() {
-        this.searchForm = this.fb.group({
-            searchAge: [''],
-            searchName: [''],
+        this.searchFormName = this.fb.group({
+            searchName: ['']
+        });
+        this.searchFormAge = this.fb.group({
+            searchAge: ['']
         });
         this.customer = [];
 
