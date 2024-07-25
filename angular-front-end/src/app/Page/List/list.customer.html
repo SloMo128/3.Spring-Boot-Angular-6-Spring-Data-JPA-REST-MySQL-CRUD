@@ -2,11 +2,9 @@
     {{ feedback.feedbackmsg }}
 </div>
 <div>
-    <button type="button" (click)="pageDirection('DESC')" class="btn btn-light">
-        <img src="assets/img/pageZA.png" style="width:40px; height:40px;" />
-    </button>
-    <button type="button" (click)="pageDirection('ASC')" class="btn btn-light">
-        <img src="assets/img/pageAZ.png" style="width:40px; height:40px;" />
+    <button type="button" (click)="pageDirection()" class="btn btn-light">
+        <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
+        <img *ngIf="sortOrder === 'DESC'"  src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
     </button>
 </div>
 

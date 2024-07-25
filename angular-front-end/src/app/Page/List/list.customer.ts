@@ -35,17 +35,18 @@ export class ListComponent implements OnInit {
   ngOnInit() {}
 
   pageDirection(page){
-    this.getList(page);
+    this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
+    this.getList();
   }
 
-  getList(page): void {
+  getList(): void {
     let params = new HttpParams;
     this.customer = [];
 
     params = params.append('page', "" + this.pagination);
     params = params.append('size', "" + this.customerPage);
     params = params.append('sort', this.sortField);
-    params = params.append('order', page)
+    params = params.append('order', this.sortOrder)
 
     this.customerService.getCustomer(params).subscribe({
       next: (data: any) => {
@@ -75,7 +76,7 @@ export class ListComponent implements OnInit {
 
   renderPage(event: number) {
     this.pagination = event - 1;
-    this.getList(this.sortOrder);
+    this.getList();
   }
 
   toggleActive(customer, index) {
