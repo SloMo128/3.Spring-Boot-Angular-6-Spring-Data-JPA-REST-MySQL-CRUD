@@ -45,10 +45,11 @@ public class Controller {
 	
 	@GetMapping("/list")
 	public ResponseEntity<Object> getCustomers(
-			 @RequestParam(name="page", required = false, defaultValue = "0") int page,
-		     @RequestParam(name="size", required = false, defaultValue = "10") int size,
-		     @RequestParam(required = false, defaultValue = "id") String sort,
-		     @RequestParam(name="order", required = false, defaultValue = "DESC") String order) {
+			@RequestParam(name="page", required = false, defaultValue = "0") int page,
+		    @RequestParam(name="size", required = false, defaultValue = "10") int size,
+		    @RequestParam(name
+		    		="sort", required = false, defaultValue = "id") String sort,
+		    @RequestParam(name="order", required = false, defaultValue = "DESC") String order) {
 		    Map<String, Object> responseBody = new LinkedHashMap<>();
 		    Sort.Direction sortDirection = "DESC".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
 		    Pageable paging = PageRequest.of(page, size, Sort.by(sortDirection, sort));
@@ -64,18 +65,38 @@ public class Controller {
 	}
 	
 	@GetMapping("/age/{age}")
-	public ResponseEntity<List<Customer>> getCustByAge(@PathVariable("age") int age) {
+	/*public ResponseEntity<List<Customer>> getCustByAge(@PathVariable("age") int age) {
+
 		Page<Customer> customerList = repo.findByAge(age, page); 
-		
 		if (customerList.hasContent()) {
 			return new ResponseEntity<>(customerList.getContent(), HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
+	}*/
+	public ResponseEntity<Object> getCustByAge(
+	        @PathVariable("age") int age,
+	        @RequestParam(name="page", required = false, defaultValue = "0") int page,
+	        @RequestParam(name="size", required = false, defaultValue = "10") int size,
+	        @RequestParam(name="sort",required = false, defaultValue = "id") String sort,
+	        @RequestParam(name="order", required = false, defaultValue = "DESC") String order) {
+	    
+	    Map<String, Object> responseBody = new LinkedHashMap<>();
+	    Sort.Direction sortDirection = "DESC".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+	    Pageable paging = PageRequest.of(page, size, Sort.by(sortDirection, sort));
+	    Page<Customer> pagedResult = repo.findByAge(age, paging);
+
+	    if (pagedResult.hasContent()) {
+	        responseBody.put("customers", pagedResult.getContent());
+	        responseBody.put("count", repo.countByAge(page));
+	        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+	    } else {
+	        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+	    }
 	}
 	
 	@GetMapping("/name/{name}")
-	public ResponseEntity<List<Customer>> getCustByName(@PathVariable("name") String name) {
+	/*public ResponseEntity<List<Customer>> getCustByName(@PathVariable("name") String name) {
 		Page<Customer> customerList = repo.findByNameButNotActive("%" + name + "%", page); 
 		
 		if (customerList.hasContent()) {
@@ -83,6 +104,31 @@ public class Controller {
 		}else {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
+	}*/
+	public ResponseEntity<Object> getCustByName(
+	        @PathVariable("name") String name,
+	        @RequestParam(name="page", required = false, defaultValue = "0") int page,
+	        @RequestParam(name="size", required = false, defaultValue = "10") int size,
+	        @RequestParam(name="sort",required = false, defaultValue = "id") String sort,
+	        @RequestParam(name="order", required = false, defaultValue = "DESC") String order) {
+	    
+	    Map<String, Object> responseBody = new LinkedHashMap<>();
+	    //Sort.Direction sortDirection = "DESC".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+	    //Pageable paging = PageRequest.of(page, size, Sort.by(sortDirection, sort));
+	    Pageable paging = PageRequest.of(page, size, Sort.by(sort));
+	    Page<Customer> pagedResult;
+	    if("DESC".equalsIgnoreCase(order)) {
+	    	pagedResult = repo.findByNameButNotActiveDESC("%"+name+"%", paging);
+	    }else {
+		    pagedResult = repo.findByNameButNotActiveASC("%"+name+"%", paging);
+	    }
+	    if (pagedResult.hasContent()) {
+	        responseBody.put("customers", pagedResult.getContent());
+	        responseBody.put("count", repo.count());
+	        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+	    } else {
+	        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+	    }
 	}
 	
 	@PostMapping(path = "/add", consumes = "application/json")

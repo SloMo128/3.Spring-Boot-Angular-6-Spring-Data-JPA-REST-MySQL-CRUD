@@ -36,11 +36,11 @@ export class CustomerApiService {
         //.pipe(catchError((err) => this.handleError('POST', err)));
     }
 
-    findByAge(age: string): Observable<Customer[]> {
-        return this.http.get<Customer[]>(this.baseURL + 'age/' + age);
+    findByAge(age: string, params: HttpParams): Observable<Customer[]> {
+        return this.http.get<Customer[]>(this.baseURL + 'age/' + age, {params});
     }
 
-    findByName(name: string): Observable<Customer[]> {
-        return this.http.get<Customer[]>(this.baseURL + 'name/' + name);
+    findByName(name: string, params: HttpParams): Observable<Customer[]> {
+        return this.http.get<Customer[]>(this.baseURL + 'name/' + name, {params});
     }
 }

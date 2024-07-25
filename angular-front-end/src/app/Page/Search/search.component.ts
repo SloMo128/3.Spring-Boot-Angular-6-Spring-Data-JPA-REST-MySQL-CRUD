@@ -16,6 +16,13 @@ export class SearchComponent implements OnInit {
     feedback = new FeedBack("", "");
     isLoading: boolean = false;
     searchForm: FormGroup;
+    totalCustomers: number = 0;
+    pagination: number = 0;
+    customerPage: number = 5;
+    sortField: string = "name";
+    sortOrder: string = "DESC";
+    page = this.sortOrder
+    searchAgeValue: String
 
     constructor(
         private customerService: CustomerApiService,
@@ -30,12 +37,27 @@ export class SearchComponent implements OnInit {
         });
     }
 
-    findByAge() {
-        const searchAgeValue = this.searchForm.controls.searchAge.value;
+    pageDirection(page){
+        this.findByAge(page);
+        this.findByName(page);
+    }
+
+    findByAge(page: string) {
+        let params = new HttpParams;
         this.customer = [];
-        this.customerService.findByAge(searchAgeValue).subscribe({
-            next: (data: Customer[]) => {
-                this.customer = data;
+
+        params = params.append('page', "" + this.pagination);
+        params = params.append('size', "" + this.customerPage);
+        params = params.append('sort', this.sortField);
+        params = params.append('order', page);
+
+        const searchAgeValue = this.searchForm.controls.searchAge.value;
+
+        this.customer = [];
+        this.customerService.findByAge(searchAgeValue, params).subscribe({
+            next: (data: any) => {
+                this.customer = data.customers;
+                this.totalCustomers = data.count;
                 this.searchForm = this.fb.group({
                     searchName: [''],
                 });
@@ -52,12 +74,22 @@ export class SearchComponent implements OnInit {
         });
     }
 
-    findByName() {
-        const searchNameValue = this.searchForm.controls.searchName.value;
+    findByName(page: string) {
+        let params = new HttpParams;
         this.customer = [];
-        this.customerService.findByName(searchNameValue).subscribe({
-            next: (data: Customer[]) => {
-                this.customer = data;
+
+        params = params.append('page', "" + this.pagination);
+        params = params.append('size', "" + this.customerPage);
+        params = params.append('sort', this.sortField);
+        params = params.append('order', page);
+
+        const searchNameValue = this.searchForm.controls.searchName.value;
+
+        this.customer = [];
+        this.customerService.findByName(searchNameValue, params).subscribe({
+            next: (data: any) => {
+                this.customer = data.customers;
+                this.totalCustomers = data.count;
                 this.searchForm = this.fb.group({
                     searchAge: [''],
                 });
@@ -74,16 +106,16 @@ export class SearchComponent implements OnInit {
         });
     }
 
-    toggleActive(customer, index){
+    toggleActive(customer, index) {
         customer.active = !customer.active
     }
 
-    reset(){
+    reset() {
         this.searchForm = this.fb.group({
             searchAge: [''],
             searchName: [''],
         });
-        this.customer=[];
+        this.customer = [];
 
         this.feedback = {
             feedbackType: "success",

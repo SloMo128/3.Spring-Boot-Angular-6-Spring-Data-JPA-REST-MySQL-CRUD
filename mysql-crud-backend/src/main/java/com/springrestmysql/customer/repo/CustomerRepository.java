@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
 public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long>, CrudRepository<Customer, Long> {
 
 	Page<Customer> findByAge(int age, Pageable pageable);
+	int countByAge(int age);
 
-	Page<Customer> findByNameButNotActive(String name, Pageable pageable);
+	Page<Customer> findByNameButNotActiveASC(String name, Pageable pageable);
+	Page<Customer> findByNameButNotActiveDESC(String name, Pageable pageable);
+
+	Page<Customer> getCustByName(String name, Pageable paging);
 }

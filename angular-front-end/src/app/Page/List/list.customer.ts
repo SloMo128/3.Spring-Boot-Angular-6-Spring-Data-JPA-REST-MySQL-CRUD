@@ -22,6 +22,9 @@ export class ListComponent implements OnInit {
   pagination: number = 0;
   customerPage: number = 5;
   sortField: string = "name";
+  sortOrder: string = "DESC";
+  page = this. sortOrder
+  chengePageIco: boolean = false
 
   constructor(
     private customerService: CustomerApiService,
@@ -29,18 +32,20 @@ export class ListComponent implements OnInit {
 
   ) { }
 
-  ngOnInit() {
-    this.getList()
+  ngOnInit() {}
+
+  pageDirection(page){
+    this.getList(page);
   }
 
-
-  getList(): void {
+  getList(page): void {
     let params = new HttpParams;
     this.customer = [];
 
     params = params.append('page', "" + this.pagination);
     params = params.append('size', "" + this.customerPage);
-    params = params.append('sort', "" + this.sortField);
+    params = params.append('sort', this.sortField);
+    params = params.append('order', page)
 
     this.customerService.getCustomer(params).subscribe({
       next: (data: any) => {
@@ -70,7 +75,7 @@ export class ListComponent implements OnInit {
 
   renderPage(event: number) {
     this.pagination = event - 1;
-    this.getList();
+    this.getList(this.sortOrder);
   }
 
   toggleActive(customer, index) {
