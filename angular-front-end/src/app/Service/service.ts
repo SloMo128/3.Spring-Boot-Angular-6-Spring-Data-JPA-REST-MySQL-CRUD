@@ -12,7 +12,7 @@ export class CustomerApiService {
     getCustomer(params: HttpParams): Observable<Customer[]> {
         return this.http.get<Customer[]>(this.baseURL + 'list', { params })
     }
-
+    
     getEdit(id: string): Observable<Customer> {
         return this.http.get<Customer>(this.baseURL + 'put/' + id)
     }

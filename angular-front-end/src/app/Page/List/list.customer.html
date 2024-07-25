@@ -36,6 +36,7 @@
             <button *ngIf="!customer.active" (click)="toggleActive(customer, i)" type="button" class="btn btn-info">
                 Active
             </button>
+
             <button type="button" (click)="deleteUser(customer.id, i)" class="btn btn-danger">
                 Delete
             </button>

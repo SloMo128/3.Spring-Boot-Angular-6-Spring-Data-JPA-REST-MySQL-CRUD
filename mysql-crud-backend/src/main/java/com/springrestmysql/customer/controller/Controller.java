@@ -45,12 +45,15 @@ public class Controller {
 	
 	@GetMapping("/list")
 	public ResponseEntity<Object> getCustomers(
-			@RequestParam(name="page", required = false, defaultValue = "0") int page,
-			@RequestParam(name="size", required = false, defaultValue = "10") int size,
-			@RequestParam(required = false, defaultValue = "id") String sort) {
-		Map<String, Object> responseBody = new LinkedHashMap<>();
-		Pageable paging = PageRequest.of(page, size, Sort.by(sort));
-		Page<Customer> pagedResult = repo.findAll(paging);
+			 @RequestParam(name="page", required = false, defaultValue = "0") int page,
+		     @RequestParam(name="size", required = false, defaultValue = "10") int size,
+		     @RequestParam(required = false, defaultValue = "id") String sort,
+		     @RequestParam(name="order", required = false, defaultValue = "DESC") String order) {
+		    Map<String, Object> responseBody = new LinkedHashMap<>();
+		    Sort.Direction sortDirection = "DESC".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+		    Pageable paging = PageRequest.of(page, size, Sort.by(sortDirection, sort));
+		    Page<Customer> pagedResult = repo.findAll(paging);
+
 		if (pagedResult.hasContent()) {
 			responseBody.put("customers", pagedResult.getContent());
 			responseBody.put("count", repo.count());

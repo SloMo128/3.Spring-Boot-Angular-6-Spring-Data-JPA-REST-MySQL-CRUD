@@ -21,7 +21,7 @@ export class ListComponent implements OnInit {
   totalCustomers: number = 0;
   pagination: number = 0;
   customerPage: number = 5;
-  sortField: string = "name"
+  sortField: string = "name";
 
   constructor(
     private customerService: CustomerApiService,
