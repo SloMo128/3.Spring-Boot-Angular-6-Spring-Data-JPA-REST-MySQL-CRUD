@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Customer } from 'src/app/Model/customer.model';
 import { CustomerApiService } from 'src/app/Service/service';
 import { HttpParams } from '@angular/common/http';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-search',
@@ -15,8 +15,7 @@ export class SearchComponent implements OnInit {
     customer: Customer[] = []
     feedback = new FeedBack("", "");
     isLoading: boolean = false;
-    searchFormName: FormGroup;
-    searchFormAge: FormGroup;
+    searchForm: FormGroup;
     totalCustomers: number = 0;
     pagination: number = 0;
     customerPage: number = 5;
@@ -27,22 +26,20 @@ export class SearchComponent implements OnInit {
         private customerService: CustomerApiService,
         private router: Router,
         private fb: FormBuilder
-    ) { }
-
-    ngOnInit() {
-        this.searchFormName = this.fb.group({
-            searchName: ['']
-        });
-        this.searchFormAge = this.fb.group({
-            searchAge: ['']
+    ) {
+        this.searchForm = this.fb.group({
+            searchName: ['', [Validators.minLength(2), Validators.maxLength(10), Validators.pattern('^[a-zA-Z]*$')]],
+            searchAge: ['', [Validators.min(1), Validators.max(120), Validators.pattern('^[0-9]*$')]]
         });
     }
 
+    ngOnInit() { }
+
     pageDirection() {
         this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
-        if(this.searchFormAge.controls.searchAge.value){
+        if (this.searchForm.controls.searchAge.value) {
             this.findByAge();
-        }else{
+        } else {
             this.findByName();
         }
     }
@@ -56,15 +53,15 @@ export class SearchComponent implements OnInit {
         params = params.append('sort', this.sortField);
         params = params.append('order', this.sortOrder);
 
-        const searchAgeValue = this.searchFormAge.controls.searchAge.value;
+        const searchAgeValue = this.searchForm.controls.searchAge.value;
 
         this.customer = [];
         this.customerService.findByAge(searchAgeValue, params).subscribe({
             next: (data: any) => {
                 this.customer = data.customers;
                 this.totalCustomers = data.count;
-                
-                this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered' };
+                this.isLoading = true;
+                this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered Name' };
             },
             error: (err: any) => {
                 this.isLoading = false;
@@ -86,15 +83,15 @@ export class SearchComponent implements OnInit {
         params = params.append('sort', this.sortField);
         params = params.append('order', this.sortOrder);
 
-        const searchNameValue = this.searchFormName.controls.searchName.value;
+        const searchNameValue = this.searchForm.controls.searchName.value;
 
         this.customer = [];
         this.customerService.findByName(searchNameValue, params).subscribe({
             next: (data: any) => {
                 this.customer = data.customers;
                 this.totalCustomers = data.count;
-                
-                this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered' };
+                this.isLoading = true;
+                this.feedback = { feedbackType: 'success', feedbackmsg: 'Filtered Age' };
             },
             error: (err: any) => {
                 this.isLoading = false;
@@ -109,9 +106,9 @@ export class SearchComponent implements OnInit {
 
     renderPage(event: number) {
         this.pagination = event - 1;
-        if(this.searchFormAge.controls.searchAge.value){
+        if (this.searchForm.controls.searchAge.value) {
             this.findByAge();
-        }else{
+        } else {
             this.findByName();
         }
     }
@@ -121,10 +118,8 @@ export class SearchComponent implements OnInit {
     }
 
     reset() {
-        this.searchFormName = this.fb.group({
-            searchName: ['']
-        });
-        this.searchFormAge = this.fb.group({
+        this.searchForm = this.fb.group({
+            searchName: [''],
             searchAge: ['']
         });
         this.customer = [];
@@ -153,5 +148,12 @@ export class SearchComponent implements OnInit {
                 }
             });
         }
+    }
+
+    get name() {
+        return this.searchForm.get('searchName');
+    }
+    get age() {
+        return this.searchForm.get('searchAge');
     }
 }

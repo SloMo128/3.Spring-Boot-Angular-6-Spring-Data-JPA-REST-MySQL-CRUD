@@ -7,39 +7,64 @@
 </div>
 
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-
     <button type="button" (click)="pageDirection()" class="btn btn-light">
         <img *ngIf="sortOrder === 'ASC'" src="assets/img/pageZA.png" alt="Sort DESC" style="width:30px; height:30px;" />
-        <img *ngIf="sortOrder === 'DESC'"  src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
+        <img *ngIf="sortOrder === 'DESC'" src="assets/img/pageAZ.png" alt="Sort ASC" style="width:30px; height:30px;" />
     </button>
 
-    <form class="form-inline" [formGroup]="searchFormAge" (ngSubmit)="findByAge()">
-        <input class="form-control mr-sm-2" type="search" formControlName="searchAge" placeholder="Search Age" aria-label="Search">
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+    <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="findByAge()">
+        <input 
+            class="form-control mr-sm-2" 
+            type="search" 
+            formControlName="searchAge" 
+            placeholder="Search Age" 
+            aria-label="Search" 
+            [ngClass]="{'is-invalid': age.invalid && (age.dirty || age.touched)}">
+        <div *ngIf="age.invalid && (age.dirty || age.touched)" class="invalid-feedback">
+            <div *ngIf="age.errors?.min">Age must be at least 1.</div>
+            <div *ngIf="age.errors?.max">Age cannot be more than 120.</div>
+            <div *ngIf="age.errors?.pattern">Age can only contain numbers.</div>
+        </div>
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" [disabled]="searchForm.invalid">Search</button>
     </form>
+    
     &nbsp;&nbsp;&nbsp;
-    <form class="form-inline" [formGroup]="searchFormName" (ngSubmit)="findByName()">
-        <input class="form-control mr-sm-2" type="search" formControlName="searchName" placeholder="Search Name" aria-label="Search">
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" (click)="findByName()">Search</button>
+
+    <form class="form-inline" [formGroup]="searchForm" (ngSubmit)="findByName()">
+        <input 
+            class="form-control mr-sm-2" 
+            type="search" 
+            formControlName="searchName" 
+            placeholder="Search Name" 
+            aria-label="Search" 
+            [ngClass]="{'is-invalid': name.invalid && (name.dirty || name.touched)}">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="invalid-feedback">
+            <div *ngIf="name.errors?.minlength">Name must be at least 2 characters long.</div>
+            <div *ngIf="name.errors?.maxlength">Name cannot be more than 10 characters long.</div>
+            <div *ngIf="name.errors?.pattern">Name can only contain letters.</div>
+        </div>
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" [disabled]="searchForm.invalid">Search</button>
     </form>
+    
     &nbsp;&nbsp;&nbsp;
+    
     <button type="button" class="btn btn-danger" (click)="reset()">Reset</button>
 </div>
 
 <div class="container mt-5">
-    <div *ngFor="let customer of customer | paginate: { itemsPerPage: customerPage, currentPage: pagination + 1, totalItems: totalCustomers }; let i = index">
+    <div *ngFor="let customer of customers | paginate: { itemsPerPage: customerPage, currentPage: pagination + 1, totalItems: totalCustomers }; let i = index">
         <h3>
             <strong>
-                <img src="assets/img/person.png" alt="Person" style="width:30px; height:30px;" /> 
+                <img src="assets/img/person.png" alt="Person" style="width:30px; height:30px;" />
                 Name:
-            </strong> 
+            </strong>
             {{ customer.name }}
         </h3>
         <h3>
             <strong>
-                <img src="assets/img/age.png" alt="Age" style="width:30px; height:30px;" /> 
+                <img src="assets/img/age.png" alt="Age" style="width:30px; height:30px;" />
                 Age:
-            </strong> 
+            </strong>
             {{ customer.age }}
         </h3>
         <h3>
@@ -47,7 +72,7 @@
                 <img *ngIf="customer.active" src="assets/img/check.png" alt="Active" style="width:30px; height:30px;" />
                 <img *ngIf="!customer.active" src="assets/img/x.png" alt="Inactive" style="width:27px; height:27px;" />
                 Active:
-            </strong> 
+            </strong>
             {{ customer.active }}
         </h3>
         <h3>
@@ -57,7 +82,7 @@
         </h3>
         <br><br>
     </div>
-    <div class="d-flex justify-content-center">
+    <div *ngIf="isLoading" class="d-flex justify-content-center">
         <pagination-controls (pageChange)="renderPage($event)"></pagination-controls>
     </div>
 </div>
