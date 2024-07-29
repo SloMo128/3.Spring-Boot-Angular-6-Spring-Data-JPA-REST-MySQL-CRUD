@@ -128,7 +128,6 @@ export class SearchComponent implements OnInit {
             feedbackType: "success",
             feedbackmsg: "Rest",
         };
-
     }
 
     deleteUser(id: string, index) {
